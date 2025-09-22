@@ -1,33 +1,54 @@
-// Функция для переключения темы
-function toggleTheme() {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-bs-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-bs-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
-}
+// main.js
+// Автоматическое скрытие алертов через 3 секунды
+window.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.alert').forEach(function(alert) {
+        setTimeout(function() {
+            alert.classList.add('fade');
+            setTimeout(function() {
+                alert.remove();
+            }, 500);
+        }, 3000);
+    });
 
-// Функция обновления иконки темы
+    // Инициализация темы
+    const theme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+    updateNavbarStyles(theme);
+
+    // Обработчик переключения темы
+    const themeSwitch = document.querySelector('.theme-switch');
+    if (themeSwitch) {
+        themeSwitch.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateNavbarStyles(newTheme);
+        });
+    }
+});
+
+// Обновление иконки темы
 function updateThemeIcon(theme) {
     const themeIcon = document.querySelector('.theme-icon');
     if (themeIcon) {
-        themeIcon.className = theme === 'dark' ? 'bi bi-sun-fill theme-icon' : 'bi bi-moon-fill theme-icon';
+        themeIcon.className = theme === 'light' ? 
+            'bi bi-moon-fill theme-icon' : 
+            'bi bi-sun-fill theme-icon';
     }
 }
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    // Получаем сохраненную тему или используем светлую по умолчанию
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    
-    // Устанавливаем тему
-    document.documentElement.setAttribute('data-bs-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-
-    // Добавляем обработчик для кнопки переключения темы
-    const themeSwitch = document.querySelector('.theme-switch');
-    if (themeSwitch) {
-        themeSwitch.addEventListener('click', toggleTheme);
+// Обновление стилей навигации при переключении темы
+function updateNavbarStyles(theme) {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        // Принудительно обновляем стили навигации
+        navbar.style.backgroundColor = '';
+        // Заставляем браузер пересчитать стили
+        navbar.offsetHeight;
     }
-}); 
+} 
+
