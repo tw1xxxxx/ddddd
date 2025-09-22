@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            <h2 class="mb-0">Информация о сотруднике</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Основная информация</h3>
+                    <p><strong>Имя пользователя:</strong> {{ employee.username }}</p>
+                    <p><strong>Email:</strong> {{ employee.email }}</p>
+                    <p><strong>Имя:</strong> {{ employee.first_name }}</p>
+                    <p><strong>Фамилия:</strong> {{ employee.last_name }}</p>
+                    <p>
+                        <strong>Статус:</strong>
+                        {% if employee.is_superuser %}
+                            <span class="badge bg-danger">Администратор</span>
+                        {% else %}
+                            <span class="badge bg-info">Сотрудник</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'employee_update' employee.pk %}" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Изменить
+                </a>
+                <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Удалить
+                </a>
+                <a href="{% url 'employee_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад к списку
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.7em;
+    }
+    
+    .btn {
+        margin-right: 0.5rem;
+    }
+    
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            border: none;
+        }
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Избранное{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Избранное</h2>
+    {% if wishlist_items %}
+    <div class="row">
+        {% for item in wishlist_items %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if item.car.image %}
+                <img src="{{ item.car.image.url }}" class="card-img-top" alt="{{ item.car.model.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.car.model.brand.name }} {{ item.car.model.name }}</h5>
+                    <p class="card-text">
+                        Год: {{ item.car.year }}<br>
+                        Цена: {{ item.car.price }} ₽<br>
+                        Пробег: {{ item.car.mileage }} км
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'car_detail' item.car.pk %}" class="btn btn-primary">Подробнее</a>
+                        <form method="post" action="{% url 'remove_from_wishlist' item.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Вы пока что ничего не добавили
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

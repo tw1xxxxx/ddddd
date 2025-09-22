@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if object %}Редактировать модель{% else %}Добавить модель{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_brand">Марка:</label>
+            {{ form.brand }}
+        </div>
+        <div class="form-group">
+            <label for="id_name">Название модели:</label>
+            {{ form.name }}
+        </div>
+        <div class="form-group">
+            <label for="id_year">Год выпуска:</label>
+            {{ form.year }}
+        </div>
+        <div class="form-group">
+            <label for="id_body_type">Тип кузова:</label>
+            {{ form.body_type }}
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .form-control, .form-select {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #343a40;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .form-label {
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select option {
+            background-color: #343a40;
+            color: #fff;
+        }
+    }
+</style>
+{% endblock %} 

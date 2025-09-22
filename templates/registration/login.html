@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-primary active rounded-button" id="loginBtn">Вход</button>
+                        <button type="button" class="btn btn-outline-primary rounded-button" id="registerBtn">Регистрация</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <!-- Форма входа -->
+                    <div id="loginForm">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                <input type="{{ field.field.widget.input_type }}" 
+                                       name="{{ field.html_name }}"
+                                       id="{{ field.id_for_label }}"
+                                       class="form-control rounded-input"
+                                       {% if field.value %}value="{{ field.value }}"{% endif %}
+                                       required>
+                                {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary rounded-button">Войти</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <div id="registerForm" style="display: none;">
+                        <form method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label">Имя пользователя</label>
+                                <input type="text" name="username" class="form-control rounded-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_email" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control rounded-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">Пароль</label>
+                                <input type="password" name="password1" class="form-control rounded-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label">Подтверждение пароля</label>
+                                <input type="password" name="password2" class="form-control rounded-input" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary rounded-button">Зарегистрироваться</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+    .card-header {
+        background-color: var(--card-header-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem;
+    }
+    .rounded-input {
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        padding: 10px 15px;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+    .rounded-input:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        border-color: #0d6efd;
+        outline: 0;
+    }
+    .rounded-input:hover {
+        border-color: #0d6efd;
+    }
+    .rounded-button {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin: 0 5px;
+    }
+    .btn-group {
+        gap: 10px;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    loginBtn.addEventListener('click', function() {
+        loginBtn.classList.add('active');
+        loginBtn.classList.remove('btn-outline-primary');
+        loginBtn.classList.add('btn-primary');
+        registerBtn.classList.remove('active');
+        registerBtn.classList.add('btn-outline-primary');
+        registerBtn.classList.remove('btn-primary');
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+    });
+
+    registerBtn.addEventListener('click', function() {
+        registerBtn.classList.add('active');
+        registerBtn.classList.remove('btn-outline-primary');
+        registerBtn.classList.add('btn-primary');
+        loginBtn.classList.remove('active');
+        loginBtn.classList.add('btn-outline-primary');
+        loginBtn.classList.remove('btn-primary');
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 
+ 
+ 

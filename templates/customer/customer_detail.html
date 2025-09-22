@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            <h2 class="mb-0">Информация о клиенте</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Основная информация</h3>
+                    <p><strong>Имя пользователя:</strong> {{ customer.user.username }}</p>
+                    <p><strong>Email:</strong> {{ customer.user.email }}</p>
+                    <p><strong>Телефон:</strong> {{ customer.phone }}</p>
+                    <p><strong>Адрес:</strong> {{ customer.address }}</p>
+                </div>
+                
+                <div class="col-md-6">
+                    <h3>История заказов</h3>
+                    {% if customer.order_set.exists %}
+                        <div class="list-group">
+                        {% for order in customer.order_set.all %}
+                            <a href="{% url 'order_detail' order.id %}" class="list-group-item list-group-item-action bg-dark text-white">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Заказ #{{ order.id }}</h5>
+                                    <small>{{ order.created_at|date:"d.m.Y" }}</small>
+                                </div>
+                                <p class="mb-1">Сумма: {{ order.total_price }} ₽</p>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>У клиента пока нет заказов</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'customer_update' customer.pk %}" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Изменить
+                </a>
+                <a href="{% url 'customer_delete' customer.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Удалить
+                </a>
+                <a href="{% url 'customer_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад к списку
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-group-item {
+        border: 1px solid rgba(255,255,255,0.125);
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem !important;
+    }
+    
+    .list-group-item:hover {
+        background-color: #343a40 !important;
+    }
+    
+    .btn {
+        margin-right: 0.5rem;
+    }
+    
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            border: none;
+        }
+        
+        .list-group-item {
+            background-color: #343a40;
+            border-color: rgba(255,255,255,0.125);
+        }
+        
+        .list-group-item:hover {
+            background-color: #3d444a !important;
+        }
+    }
+</style>
+{% endblock %} 

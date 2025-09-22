@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            {% if car.image %}
+            <img src="{{ car.image.url }}" class="img-fluid rounded shadow" alt="{{ car.model }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">{{ car.model.brand.name }} {{ car.model.name }}</h1>
+                    <div class="car-info">
+                        <p><strong>Год выпуска:</strong> {{ car.year }}</p>
+                        <p><strong>VIN:</strong> {{ car.vin }}</p>
+                        <p><strong>Цвет:</strong> {{ car.color }}</p>
+                        <p><strong>Пробег:</strong> {{ car.mileage }} км</p>
+                        <p><strong>Цена:</strong> {{ car.price }} ₽</p>
+                        {% if car.description %}
+                        <p><strong>Описание:</strong> {{ car.description }}</p>
+                        {% endif %}
+                        {% if car.features %}
+                        <p><strong>Особенности:</strong> {{ car.features }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        {% if user.is_staff %}
+                        <a href="{% url 'car_update' car.pk %}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Изменить
+                        </a>
+                        <a href="{% url 'car_delete' car.pk %}" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Удалить
+                        </a>
+                        {% endif %}
+
+                        {% if car.is_available %}
+                        <form method="post" action="{% url 'add_to_wishlist' car.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-heart"></i> В избранное
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'cart_add' car.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-cart-plus"></i> В корзину
+                            </button>
+                        </form>
+                        <a href="{% url 'schedule_testdrive' car.pk %}" class="btn btn-outline-success">
+                            <i class="bi bi-car-front"></i> Записаться на тест-драйв
+                        </a>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Автомобиль недоступен для покупки
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .car-info p {
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn {
+        border-radius: 8px;
+    }
+    
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .card-title {
+            color: #fff;
+        }
+        
+        .car-info {
+            color: #adb5bd;
+        }
+    }
+</style>
+{% endblock %} 

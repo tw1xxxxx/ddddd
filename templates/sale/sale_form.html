@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-cart-check"></i> 
+                        {% if object %}
+                            Редактирование продажи
+                        {% else %}
+                            Добавление новой продажи
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_car" class="form-label">
+                                <i class="bi bi-car-front"></i> Автомобиль
+                            </label>
+                            <select name="car" class="form-select form-select-lg" required id="id_car">
+                                <option value="">Выберите автомобиль</option>
+                                {% for car in form.car.field.queryset %}
+                                    <option value="{{ car.id }}" {% if form.car.value == car.id %}selected{% endif %}>
+                                        {{ car.model.brand.name }} {{ car.model.name }} ({{ car.vin }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.car.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.car.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_customer" class="form-label">
+                                <i class="bi bi-person"></i> Клиент
+                            </label>
+                            <select name="customer" class="form-select form-select-lg" required id="id_customer">
+                                <option value="">Выберите клиента</option>
+                                {% for customer in form.customer.field.queryset %}
+                                    <option value="{{ customer.id }}" {% if form.customer.value == customer.id %}selected{% endif %}>
+                                        {{ customer.user.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.customer.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.customer.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_employee" class="form-label">
+                                <i class="bi bi-person-badge"></i> Сотрудник
+                            </label>
+                            <select name="employee" class="form-select form-select-lg" required id="id_employee">
+                                <option value="">Выберите сотрудника</option>
+                                {% for employee in form.employee.field.queryset %}
+                                    <option value="{{ employee.id }}" {% if form.employee.value == employee.id %}selected{% endif %}>
+                                        {{ employee.get_full_name|default:employee.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.employee.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.employee.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_sale_date" class="form-label">
+                                <i class="bi bi-calendar"></i> Дата продажи
+                            </label>
+                            <input type="date" name="sale_date" class="form-control form-control-lg" required id="id_sale_date" value="{{ form.sale_date.value|default:'' }}">
+                            {% if form.sale_date.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.sale_date.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_price" class="form-label">
+                                <i class="bi bi-currency-dollar"></i> Цена продажи
+                            </label>
+                            <input type="number" name="price" class="form-control form-control-lg" required id="id_price" value="{{ form.price.value|default:'' }}">
+                            {% if form.price.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.price.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> 
+                                {% if object %}
+                                    Сохранить изменения
+                                {% else %}
+                                    Добавить продажу
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'sale_list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Вернуться к списку
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .form-control, .form-select {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #343a40;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .form-label {
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select option {
+            background-color: #343a40;
+            color: #fff;
+        }
+    }
+</style>
+{% endblock %} 

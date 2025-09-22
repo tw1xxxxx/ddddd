@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-tag"></i> 
+                        {% if object %}
+                            Редактирование бренда
+                        {% else %}
+                            Добавление нового бренда
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_name" class="form-label">
+                                <i class="bi bi-tag"></i> Название бренда
+                            </label>
+                            <input type="text" name="name" class="form-control form-control-lg" required id="id_name" value="{{ form.name.value|default:'' }}">
+                            {% if form.name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_country" class="form-label">
+                                <i class="bi bi-globe"></i> Страна
+                            </label>
+                            <input type="text" name="country" class="form-control form-control-lg" required id="id_country" value="{{ form.country.value|default:'' }}">
+                            {% if form.country.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.country.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label">
+                                <i class="bi bi-card-text"></i> Описание
+                            </label>
+                            <textarea name="description" class="form-control form-control-lg" id="id_description" rows="3">{{ form.description.value|default:'' }}</textarea>
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.description.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_logo" class="form-label">
+                                <i class="bi bi-image"></i> Логотип
+                            </label>
+                            <input type="file" name="logo" class="form-control form-control-lg" id="id_logo" accept="image/*">
+                            {% if form.logo.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.logo.errors }}
+                            </div>
+                            {% endif %}
+                            {% if object and object.logo %}
+                            <div class="mt-2">
+                                <img src="{{ object.logo.url }}" alt="{{ object.name }}" class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_model_name" class="form-label">
+                                <i class="bi bi-car-front"></i> Модель автомобиля
+                            </label>
+                            <input type="text" name="model_name" class="form-control form-control-lg" id="id_model_name" value="{% if form.model_name.value %}{{ form.model_name.value }}{% elif object and object.model_set.first %}{{ object.model_set.first.name }}{% endif %}">
+                            {% if form.model_name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.model_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> 
+                                {% if object %}
+                                    Сохранить изменения
+                                {% else %}
+                                    Добавить бренд
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'brand_list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Вернуться к списку
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .form-control, .form-select {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #343a40;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .form-label {
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select option {
+            background-color: #343a40;
+            color: #fff;
+        }
+    }
+</style>
+{% endblock %} 

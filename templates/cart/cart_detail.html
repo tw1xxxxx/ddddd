@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-cart"></i> Корзина
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if cart|length > 0 %}
+                        {% for item in cart %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3">
+                                            {% if item.car.image %}
+                                                <img src="{{ item.car.image.url }}" alt="{{ item.model }}" class="img-fluid rounded">
+                                            {% else %}
+                                                <img src="https://via.placeholder.com/200x150" alt="No image" class="img-fluid rounded">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5 class="card-title">{{ item.model }}</h5>
+                                            <p class="card-text">
+                                                <i class="bi bi-upc"></i> VIN: {{ item.vin }}<br>
+                                                <i class="bi bi-currency-dollar"></i> Цена: {{ item.price|floatformat:2 }} ₽
+                                            </p>
+                                        </div>
+                                        <div class="col-md-3 text-end">
+                                            <a href="{% url 'cart_remove' item.car.id %}" class="btn btn-danger">
+                                                <i class="bi bi-trash"></i> Удалить
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="card bg-light mt-4">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h4 class="mb-0">Итого: {{ cart.get_total_price|floatformat:2 }} ₽</h4>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <a href="{% url 'create_order' %}" class="btn btn-success btn-lg">
+                                            <i class="bi bi-check-circle"></i> Оформить заказ
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-cart-x display-1 text-muted"></i>
+                            <h3 class="mt-3">Ваша корзина пуста</h3>
+                            <p class="text-muted">Добавьте автомобили в корзину, чтобы оформить заказ</p>
+                            <a href="{% url 'car_list' %}" class="btn btn-primary btn-lg mt-3">
+                                <i class="bi bi-car-front"></i> Перейти к каталогу
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .card-body {
+            background-color: #2b3035;
+        }
+
+        .card.bg-light {
+            background-color: #343a40 !important;
+            color: #fff !important;
+        }
+
+        .text-muted {
+            color: #adb5bd !important;
+        }
+
+        .text-primary {
+            color: #5c9eff !important;
+        }
+    }
+</style>
+{% endblock %} 

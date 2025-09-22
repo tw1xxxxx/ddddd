@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if object %}
+        Редактирование автомобиля
+    {% else %}
+        Добавление нового автомобиля
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация календаря для выбора года
+        flatpickr("#id_year", {
+            locale: 'ru',
+            dateFormat: "Y",
+            allowInput: true,
+            minDate: "1900",
+            maxDate: "2024",
+            mode: "single",
+            enableTime: false,
+            altFormat: "Y",
+            altInput: true,
+            altInputClass: "form-control form-control-lg",
+            static: true,
+            defaultDate: "{{ form.year.value|default:'' }}"
+        });
+
+        // Загрузка моделей при выборе марки
+        const brandSelect = document.getElementById('id_brand');
+        const modelSelect = document.getElementById('id_model');
+        
+        function loadModels() {
+            const brandId = brandSelect.value;
+            if (brandId) {
+                fetch(`/ajax/load-models/?brand_id=${brandId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+                        data.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model.id;
+                            option.textContent = model.name;
+                            if (model.id === parseInt('{{ form.model.value|default:0 }}')) {
+                                option.selected = true;
+                            }
+                            modelSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке моделей:', error);
+                        modelSelect.innerHTML = '<option value="">Ошибка загрузки моделей</option>';
+                    });
+            } else {
+                modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            }
+        }
+        
+        brandSelect.addEventListener('change', loadModels);
+        
+        // Если есть выбранная марка, загружаем модели
+        if (brandSelect.value) {
+            loadModels();
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-car-front"></i> 
+                        {% if object %}
+                            Редактирование автомобиля
+                        {% else %}
+                            Добавление нового автомобиля
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_brand" class="form-label">
+                                <i class="bi bi-tag"></i> Марка автомобиля
+                            </label>
+                            {{ form.brand }}
+                            {% if form.brand.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.brand.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_model" class="form-label">
+                                <i class="bi bi-car-front"></i> Модель
+                            </label>
+                            {{ form.model }}
+                            {% if form.model.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.model.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_vin" class="form-label">
+                                <i class="bi bi-upc"></i> VIN-номер
+                            </label>
+                            {{ form.vin }}
+                            {% if form.vin.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.vin.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_color" class="form-label">
+                                <i class="bi bi-palette"></i> Цвет
+                            </label>
+                            {{ form.color }}
+                            {% if form.color.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.color.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_price" class="form-label">
+                                <i class="bi bi-currency-dollar"></i> Цена
+                            </label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.price.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_mileage" class="form-label">
+                                <i class="bi bi-speedometer2"></i> Пробег
+                            </label>
+                            {{ form.mileage }}
+                            {% if form.mileage.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.mileage.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_year" class="form-label">
+                                <i class="bi bi-calendar"></i> Год выпуска
+                            </label>
+                            {{ form.year }}
+                            {% if form.year.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.year.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_features" class="form-label">
+                                <i class="bi bi-list-check"></i> Особенности
+                            </label>
+                            {{ form.features }}
+                            {% if form.features.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.features.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_image" class="form-label">
+                                <i class="bi bi-image"></i> Фото автомобиля
+                            </label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.image.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            {{ form.is_available }}
+                            <label class="form-check-label" for="id_is_available">
+                                Доступен для продажи
+                            </label>
+                            {% if form.is_available.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.is_available.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> 
+                                {% if object %}
+                                    Сохранить изменения
+                                {% else %}
+                                    Добавить автомобиль
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'car_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Назад к списку
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+</style>
+{% endblock %} 

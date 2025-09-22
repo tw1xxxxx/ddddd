@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Список марок автомобилей</h1>
+    <a href="{% url 'brand_create' %}" class="btn btn-primary mb-3">Добавить марку</a>
+    <div class="row">
+        {% for brand in brands %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if brand.logo %}
+                <img src="{{ brand.logo.url }}" class="card-img-top" alt="{{ brand.name }}" style="height: 200px; object-fit: contain; background-color: #f8f9fa;">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        {{ brand.name }}{% if brand.model_set.exists %}&nbsp;&nbsp;{{ brand.model_set.first.name }}{% endif %}
+                    </h5>
+                    <p class="card-text flex-grow-1">
+                        Страна: {{ brand.country }}<br>
+                        {% if brand.description %}{{ brand.description|truncatewords:20 }}{% endif %}
+                    </p>
+                    <div class="mt-auto">
+                        <a href="{% url 'brand_detail' brand.pk %}" class="btn btn-info">Подробнее</a>
+                        <a href="{% url 'brand_update' brand.pk %}" class="btn btn-warning">Изменить</a>
+                        <a href="{% url 'brand_delete' brand.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Список продаж</h1>
+    <a href="{% url 'sale_create' %}" class="btn btn-primary mb-3">Добавить продажу</a>
+    <div class="row">
+        {% for sale in sales %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Продажа #{{ sale.id }}</h5>
+                    <p class="card-text">
+                        Автомобиль: {{ sale.car }}<br>
+                        Клиент: {{ sale.customer }}<br>
+                        Сотрудник: {{ sale.employee }}<br>
+                        Дата: {{ sale.sale_date }}<br>
+                        Цена: {{ sale.price }} ₽
+                    </p>
+                    <a href="{% url 'sale_detail' sale.pk %}" class="btn btn-info">Подробнее</a>
+                    <a href="{% url 'sale_update' sale.pk %}" class="btn btn-warning">Изменить</a>
+                    <a href="{% url 'sale_delete' sale.pk %}" class="btn btn-danger">Удалить</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-person-badge"></i> 
+                        {% if object %}
+                            Редактирование сотрудника
+                        {% else %}
+                            Добавление нового сотрудника
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if not object %}
+                        <div class="mb-4">
+                            <label for="id_username" class="form-label">
+                                <i class="bi bi-person"></i> Имя пользователя
+                            </label>
+                            <input type="text" name="username" class="form-control form-control-lg" required id="id_username" value="{{ form.username.value|default:'' }}">
+                            {% if form.username.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.username.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password1" class="form-label">
+                                <i class="bi bi-key"></i> Пароль
+                            </label>
+                            <input type="password" name="password1" class="form-control form-control-lg" required id="id_password1">
+                            {% if form.password1.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.password1.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password2" class="form-label">
+                                <i class="bi bi-key-fill"></i> Подтверждение пароля
+                            </label>
+                            <input type="password" name="password2" class="form-control form-control-lg" required id="id_password2">
+                            {% if form.password2.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.password2.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label for="id_first_name" class="form-label">
+                                <i class="bi bi-person-vcard"></i> Имя
+                            </label>
+                            <input type="text" name="first_name" class="form-control form-control-lg" id="id_first_name" value="{{ form.first_name.value|default:'' }}">
+                            {% if form.first_name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.first_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_last_name" class="form-label">
+                                <i class="bi bi-person-vcard-fill"></i> Фамилия
+                            </label>
+                            <input type="text" name="last_name" class="form-control form-control-lg" id="id_last_name" value="{{ form.last_name.value|default:'' }}">
+                            {% if form.last_name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.last_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <input type="email" name="email" class="form-control form-control-lg" id="id_email" value="{{ form.email.value|default:'' }}">
+                            {% if form.email.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_superuser" class="form-check-input" id="id_is_superuser" {% if form.is_superuser.value %}checked{% endif %}>
+                                <label class="form-check-label" for="id_is_superuser">
+                                    <i class="bi bi-shield-check"></i> Администратор
+                                </label>
+                            </div>
+                            {% if form.is_superuser.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.is_superuser.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> 
+                                {% if object %}
+                                    Сохранить изменения
+                                {% else %}
+                                    Добавить сотрудника
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'employee_list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Вернуться к списку
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+    
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+    }
+    
+        .form-control, .form-select {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+    }
+    
+        .form-control:focus, .form-select:focus {
+            background-color: #343a40;
+            border-color: #0d6efd;
+            color: #fff;
+    }
+    
+    .form-label {
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select option {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .form-check-label {
+            color: #fff;
+        }
+    }
+</style>
+{% endblock %} 

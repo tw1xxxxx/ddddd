@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Мои тест-драйвы</h1>
+    {% if testdrive_items %}
+    <div class="row">
+        {% for item in testdrive_items %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        {{ item.car.model.brand.name }} {{ item.car.model.name }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if item.car.image %}
+                            <img src="{{ item.car.image.url }}" class="img-fluid rounded" alt="{{ item.car.model.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <p class="card-text">
+                                <strong>Дата и время:</strong> {{ item.date|date:"d.m.Y H:i" }}<br>
+                                <strong>Статус:</strong> 
+                                {% if item.status == 'pending' %}
+                                    <span class="badge bg-warning">Ожидает подтверждения</span>
+                                {% elif item.status == 'confirmed' %}
+                                    <span class="badge bg-success">Подтвержден</span>
+                                {% elif item.status == 'completed' %}
+                                    <span class="badge bg-info">Завершен</span>
+                                {% elif item.status == 'cancelled' %}
+                                    <span class="badge bg-danger">Отменен</span>
+                                {% endif %}
+                                {% if item.notes %}
+                                <br><strong>Примечания:</strong> {{ item.notes }}
+                                {% endif %}
+                            </p>
+                            <div class="btn-group">
+                                <a href="{% url 'car_detail' item.car.pk %}" class="btn btn-info">
+                                    <i class="bi bi-info-circle"></i> Об автомобиле
+                                </a>
+                                {% if item.status == 'pending' %}
+                                <form method="post" action="{% url 'testdrive_cancel' item.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> Отменить
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> У вас пока нет записей на тест-драйв.
+        <a href="{% url 'car_list' %}" class="alert-link">Перейти к каталогу</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
+ 
+ 

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Автомобили</h1>
+        {% if user.is_staff %}
+        <a href="{% url 'car_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Добавить автомобиль
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for car in cars %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 car-card" data-car-id="{{ car.pk }}">
+                {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.model }}">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ car.model.brand.name }} {{ car.model.name }}</h5>
+                        <small class="text-muted click-hint">
+                            <i class="bi bi-cursor"></i> Клик для подробностей
+                        </small>
+                    </div>
+                    <p class="card-text">
+                        <strong>Год Выпуска:</strong> {{ car.year }}<br>
+                        <strong>Цена:</strong> {{ car.price }} ₽<br>
+                        <strong>VIN:</strong> {{ car.vin }}
+                        {% if car.is_available %}
+                            <span class="badge bg-success">В наличии</span>
+                        {% else %}
+                            <span class="badge bg-danger">Нет в наличии</span>
+                        {% endif %}
+                    </p>
+                    
+                    <div class="mt-auto">
+                        {% if user.is_staff %}
+                        <div class="btn-group-vertical w-100 mb-2">
+                            <a href="{% url 'car_update' car.pk %}" class="btn btn-warning" onclick="event.stopPropagation()">
+                                <i class="bi bi-pencil"></i> Изменить
+                            </a>
+                            <a href="{% url 'car_delete' car.pk %}" class="btn btn-danger" onclick="event.stopPropagation()">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% if car.is_available %}
+                        <div class="d-flex gap-2">
+                            <form method="post" action="{% url 'add_to_wishlist' car.pk %}" class="flex-fill" onclick="event.stopPropagation()">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-heart"></i> В избранное
+                                </button>
+                            </form>
+                            
+                            <form method="post" action="{% url 'cart_add' car.pk %}" class="flex-fill" onclick="event.stopPropagation()">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-cart-plus"></i> В корзину
+                                </button>
+                            </form>
+                        </div>
+                        <div class="mt-2">
+                            <a href="{% url 'schedule_testdrive' car.pk %}" class="btn btn-outline-success w-100" onclick="event.stopPropagation()">
+                                <i class="bi bi-car-front"></i> Тест-драйв
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .car-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .car-card:active {
+        transform: translateY(-2px);
+    }
+    
+    .click-hint {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    
+    .car-card:hover .click-hint {
+        opacity: 1;
+    }
+    
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .btn-group-vertical {
+        gap: 0.5rem;
+    }
+    
+    .btn-group-vertical .btn {
+        text-align: left;
+        padding: 0.5rem 1rem;
+    }
+    
+    .badge {
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+    
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .card-title {
+            color: #fff;
+        }
+        
+        .card-text {
+            color: #adb5bd;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Добавляем обработчики клика для всех карточек автомобилей
+    const carCards = document.querySelectorAll('.car-card');
+    
+    carCards.forEach(function(card) {
+        card.addEventListener('click', function(event) {
+            // Проверяем, что клик не по кнопке или форме
+            if (event.target.closest('button') || event.target.closest('form') || event.target.closest('a')) {
+                return;
+            }
+            
+            // Получаем ID автомобиля из data-атрибута
+            const carId = card.getAttribute('data-car-id');
+            if (carId) {
+                // Перенаправляем на страницу детальной информации
+                window.location.href = '/cars/' + carId + '/';
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

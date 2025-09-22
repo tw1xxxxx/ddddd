@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Оформление заказа</h2>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Ваш заказ</h5>
+                    {% for item in cart_items %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            {% if item.car.image %}
+                            <div class="col-md-4">
+                                <img src="{{ item.car.image.url }}" class="img-fluid rounded-start" alt="{{ item.car.model.name }}">
+                            </div>
+                            {% endif %}
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.car.model.brand.name }} {{ item.car.model.name }}</h5>
+                                    <p class="card-text">
+                                        Год: {{ item.car.year }}<br>
+                                        Цена: {{ item.car.price }} ₽<br>
+                                        Пробег: {{ item.car.mileage }} км
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Итого</h5>
+                    <p class="card-text">
+                        Количество автомобилей: {{ cart_items|length }}<br>
+                        Общая стоимость: {{ total_price }} ₽
+                    </p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success w-100">Подтвердить заказ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

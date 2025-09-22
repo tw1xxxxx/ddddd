@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-calendar-check"></i> Запись на тест-драйв
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h4 class="text-primary">
+                            <i class="bi bi-car-front"></i> Автомобиль
+                        </h4>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ car.model.brand.name }} {{ car.model.name }}</h5>
+                                <p class="card-text">
+                                    <i class="bi bi-upc"></i> VIN: {{ car.vin }}<br>
+                                    <i class="bi bi-palette"></i> Цвет: {{ car.color }}<br>
+                                    <i class="bi bi-currency-dollar"></i> Цена: {{ car.price }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_date" class="form-label">
+                                <i class="bi bi-clock"></i> Дата и время тест-драйва
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar"></i>
+                                </span>
+                                {{ form.date }}
+                            </div>
+                            {% if form.date.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.date.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="text-muted">
+                                Выберите удобную дату и время для тест-драйва. Доступное время: с 9:00 до 20:00
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_status" class="form-label">
+                                <i class="bi bi-check-circle"></i> Статус
+                            </label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                            <div class="alert alert-danger mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> {{ form.status.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg"></i> Записаться на тест-драйв
+                            </button>
+                            <a href="{% url 'car_detail' car.pk %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Вернуться к автомобилю
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .input-group-text {
+        border-radius: 10px 0 0 10px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .input-group .form-control {
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.3);
+    }
+    
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(108, 117, 125, 0.3);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Стили для темной темы */
+    @media (prefers-color-scheme: dark) {
+        .card {
+            background-color: #2b3035;
+            color: #fff;
+        }
+        
+        .card-body {
+            background-color: #2b3035;
+        }
+
+        .card.bg-light {
+            background-color: #343a40 !important;
+            color: #fff !important;
+        }
+
+        .card.bg-light .card-body {
+            background-color: #343a40 !important;
+        }
+
+        .card.bg-light .card-title {
+            color: #fff !important;
+        }
+
+        .card.bg-light .card-text {
+            color: #fff !important;
+        }
+
+        .text-muted {
+            color: #adb5bd !important;
+        }
+
+        .text-primary {
+            color: #5c9eff !important;
+        }
+        
+        .form-control, .form-select {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #343a40;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .form-label {
+            color: #fff;
+        }
+
+        .input-group-text {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select option {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .btn-outline-secondary {
+            color: #fff;
+            border-color: #495057;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('id_date');
+        
+        // Устанавливаем минимальное время (9:00) и максимальное (20:00)
+        dateInput.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const hours = selectedDate.getHours();
+            
+            if (hours < 9) {
+                selectedDate.setHours(9, 0, 0);
+                this.value = selectedDate.toISOString().slice(0, 16);
+            } else if (hours > 20) {
+                selectedDate.setHours(20, 0, 0);
+                this.value = selectedDate.toISOString().slice(0, 16);
+            }
+        });
+    });
+</script>
+{% endblock %} 
